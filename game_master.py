@@ -31,37 +31,46 @@ class GameMaster:
             self._dots[i] = dot.Dot(self._dot_start_x, self._dot_start_y,
                                     self._target_x, self._target_y)
 
-    def update_dots(self, window: pygame.Surface) -> None:
+    def update_dots(self, window: pygame.Surface, pause_time: float) -> None:
         """
-        Given a window to display, runs a step for all Dots in Game Master
+        Given a window to display, and a time between velocity updates,
+        runs a step for all Dots in Game Master
         :param window: window for display
+        :param pause_time: time between velocity updates
         """
-        window.fill((255, 255, 255))
-        pygame.draw.circle(window, (255, 0, 0),
-                           (self._target_x, self._target_y), 5)
-        pygame.draw.circle(window, (0, 255, 0),
-                           (self._dot_start_x, self._dot_start_y), 5)
         point: dot.Dot
+        # moves dots and updates display
+        frames = 10
+        for i in range(frames):
+            window.fill((255, 255, 255))
+            pygame.draw.circle(window, (255, 0, 0),
+                               (self._target_x, self._target_y), 5)
+            pygame.draw.circle(window, (0, 255, 0),
+                               (self._dot_start_x, self._dot_start_y), 5)
+            for point in self._dots:
+                pygame.draw.circle(window, (0, 0, 0), (point.get_x(), point.get_y()), 3)
+                point.take_step(1 / frames)
+                if (point.get_x() < 0 or point.get_y() < 0
+                        or point.get_x() > window.get_width() or point.get_y() > window.get_height()):
+                    point.die()
+            pygame.display.update()
+            time.sleep(pause_time / frames)
+
+        # updates point velocities
         for point in self._dots:
-            pygame.draw.circle(window, (0, 0, 0), (point.get_x(), point.get_y()), 3)
-            point.take_step()
             point.chose_velocity()
-            if (point.get_x() < 0 or point.get_y() < 0
-                    or point.get_x() > window.get_width() or point.get_x() > window.get_height()):
-                point.die()
-        pygame.display.update()
+
 
     def run_generation(self, window: pygame.Surface, step_num: int, pause_time: float) -> None:
         """
-        Given a window for display, number of steps to take, and the time between display
+        Given a window for display, number of steps to take, and the time between velocity
         updates, runs the generation for the given number of steps.
         :param window: window for display
         :param step_num: number of steps in generation
-        :param pause_time: time between display updates
+        :param pause_time: time between velocity updates
         """
         for i in range(step_num):
-            self.update_dots(window)
-            time.sleep(pause_time)
+            self.update_dots(window, pause_time)
 
     def reproduce_dots(self):
         """

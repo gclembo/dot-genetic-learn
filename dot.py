@@ -22,7 +22,7 @@ class Dot:
         self._target_x = target_x
         self._target_y = target_y
         self._is_alive = True
-        self._brain = (np.random.rand(2, 6) - 0.5)
+        self._brain = (np.random.rand(2, 6) - 0.5) * 0.1
         self._learning_rate = 0.1
 
     def get_x(self) -> float:
@@ -61,13 +61,14 @@ class Dot:
         """
         self._is_alive = False
 
-    def take_step(self) -> None:
+    def take_step(self, step_size: float) -> None:
         """
-        If this Dot is alive, it takes a step in the direction it is moving.
+        If this Dot is alive, it takes a step in the direction it is moving given a step size
+        :param step_size: the size of the step
         """
         if self._is_alive:
-            self._x += self._dx
-            self._y += self._dy
+            self._x += self._dx * step_size
+            self._y += self._dy * step_size
 
     def get_fitness(self) -> float:
         """
@@ -98,7 +99,7 @@ class Dot:
         """
         Updates learning rate based on how successful the Dot is
         """
-        self._learning_rate = self.get_fitness() / 1000  # arbitrary
+        self._learning_rate = self.get_fitness() / 10000  # arbitrary
 
     def make_brain_copy(self, other: 'Dot') -> None:
         """

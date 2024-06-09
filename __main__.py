@@ -1,13 +1,15 @@
-import pygame, game_master
+import game_master
+import pygame
 
-height = 800
 width = 1000
-target_x = 400
-target_y = 400
-
+height = 800
+target_x = width / 2
+target_y = height / 2
+dot_start_x = width - 200
+dot_start_y = height - 200
 
 def main():
-    gm = game_master.GameMaster(600, 600, 30, target_x, target_y)
+    gm = game_master.GameMaster(dot_start_x, dot_start_y, 30, target_x, target_y)
 
     pygame.init()
     window = pygame.display.set_mode((width, height))
@@ -22,7 +24,6 @@ def main():
     for i in range(30):
         gm.reproduce_dots()
         gm.run_generation(window, 20, 0.1)
-
 
     active = True
     while active:
