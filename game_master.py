@@ -3,27 +3,46 @@ import pygame
 import dot
 
 
-# this class handles running the dot generations
 class GameMaster:
-    def __init__(self, dot_start_x, dot_start_y, num_dots, target_x, target_y):
-        self.dots = [None] * num_dots
-        self.num_dots = num_dots
-        self.dot_start_x = dot_start_x
-        self.dot_start_y = dot_start_y
-        self.target_x = target_x
-        self.target_y = target_y
-
+    """
+    This class is a Game Master which facilitates dot generations
+    """
+    def __init__(self, dot_start_x: float, dot_start_y: float, num_dots: int,
+                 target_x: float, target_y: float) -> None:
+        """
+        Initializes a new GameMaster object given a starting x any for each generation of Dots,
+        the number of dots in each generation, and the target x and y for each generation
+        :param dot_start_x:
+        :param dot_start_y:
+        :param num_dots:
+        :param target_x:
+        :param target_y:
+        :raises ValueError: if the number of dots is not at least 2
+        """
+        if num_dots < 2:
+            raise ValueError("Number of dots must be at least 2")
+        self._dots = [None] * num_dots
+        self._num_dots = num_dots
+        self._dot_start_x = dot_start_x
+        self._dot_start_y = dot_start_y
+        self._target_x = target_x
+        self._target_y = target_y
         for i in range(num_dots):
-            self.dots[i] = dot.Dot(dot_start_x, dot_start_y, target_x, target_y)
+            self._dots[i] = dot.Dot(self._dot_start_x, self._dot_start_y,
+                                    self._target_x, self._target_y)
 
-    def update_dots(self, window):
+    def update_dots(self, window: pygame.Surface) -> None:
+        """
+        Given a window to display, runs a step for all Dots in Game Master
+        :param window: window for display
+        """
         window.fill((255, 255, 255))
         pygame.draw.circle(window, (255, 0, 0),
-                           (self.target_x, self.target_y), 5)
+                           (self._target_x, self._target_y), 5)
         pygame.draw.circle(window, (0, 255, 0),
-                           (self.dot_start_x, self.dot_start_y), 5)
-
-        for point in self.dots:
+                           (self._dot_start_x, self._dot_start_y), 5)
+        point: dot.Dot
+        for point in self._dots:
             pygame.draw.circle(window, (0, 0, 0), (point.get_x(), point.get_y()), 3)
             point.take_step()
             point.chose_velocity()
@@ -32,23 +51,31 @@ class GameMaster:
                 point.die()
         pygame.display.update()
 
-    def run_generation(self, window, step_num, pause_time):
+    def run_generation(self, window: pygame.Surface, step_num: int, pause_time: float) -> None:
+        """
+        Given a window for display, number of steps to take, and the time between display
+        updates, runs the generation for the given number of steps.
+        :param window: window for display
+        :param step_num: number of steps in generation
+        :param pause_time: time between display updates
+        """
         for i in range(step_num):
             self.update_dots(window)
             time.sleep(pause_time)
 
     def reproduce_dots(self):
-        self.dots.sort()
-        self.dots[0].update_learning_rate()
-        self.dots[0].reset(self.dot_start_x, self.dot_start_y)
-        self.dots[1].update_learning_rate()
-        self.dots[1].reset(self.dot_start_x, self.dot_start_y)
+        """
+        Refreshes new generation of Dots based on the top two fittest Dots
+        """
+        self._dots.sort()
+        self._dots[0].update_learning_rate()
+        self._dots[0].reset(self._dot_start_x, self._dot_start_y)
+        self._dots[1].update_learning_rate()
+        self._dots[1].reset(self._dot_start_x, self._dot_start_y)
 
-        for i in range(2, len(self.dots) - 1):
-            point = self.dots[i]
-            point.make_brain_copy(self.dots[i % 2])
-            point.reset(self.dot_start_x, self.dot_start_y)
-            point._brain.mutate()
-            self.dots[i] = point
-
-
+        for i in range(2, len(self._dots) - 1):
+            point: dot.Dot = self._dots[i]
+            point.make_brain_copy(self._dots[i % 2])
+            point.reset(self._dot_start_x, self._dot_start_y)
+            point.mutate()
+            self._dots[i] = point

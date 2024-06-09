@@ -22,7 +22,8 @@ class Dot:
         self._target_x = target_x
         self._target_y = target_y
         self._is_alive = True
-        self._brain = self._Brain()
+        self._brain = (np.random.rand(2, 6) - 0.5)
+        self._learning_rate = 0.1
 
     def get_x(self) -> float:
         """
@@ -64,7 +65,7 @@ class Dot:
         """
         If this Dot is alive, it takes a step in the direction it is moving.
         """
-        if (self._is_alive):
+        if self._is_alive:
             self._x += self._dx
             self._y += self._dy
 
@@ -83,8 +84,8 @@ class Dot:
         """
         Decides what the Dot's current velocity should be
         """
-        [self._dx, self._dy] = self._brain.make_choice([self._x, self._y, self._dx, self._dy,
-                                                        self._target_x, self._target_y])
+        [self._dx, self._dy] = np.dot(self._brain, [self._x, self._y, self._dx, self._dy,
+                                                    self._target_x, self._target_y])
 
     def dist_to_target(self) -> float:
         """
@@ -97,15 +98,15 @@ class Dot:
         """
         Updates learning rate based on how successful the Dot is
         """
-        self._brain.learning_rate = self.get_fitness() / 1000  # arbitrary
+        self._learning_rate = self.get_fitness() / 1000  # arbitrary
 
     def make_brain_copy(self, other: 'Dot') -> None:
         """
         Given another dot, makes a copy of its brain and replaces this brain with other brain.
         :param other: Other Dot to copy brain from
         """
-        self._brain.weights = np.copy(other._brain.weights)
-        self._brain.learning_rate = other._brain.learning_rate
+        self._brain = np.copy(other._brain)
+        self._learning_rate = other._learning_rate
 
     def __lt__(self, other: 'Dot') -> bool:
         """
@@ -116,16 +117,8 @@ class Dot:
         """
         return self.get_fitness() < other.get_fitness()
 
-    # This class is a brain for a point which controls how points make decisions
-    class _Brain:
-        # Initializes a new brain and sets brain weights
-        def __init__(self):
-            self.weights = (np.random.rand(2, 6) - 0.5)
-            self.learning_rate = 0.1
-
-        # given an input vector, evaluates it and returns output vector
-        def make_choice(self, condition):
-            return np.dot(self.weights, condition)
-
-        def mutate(self):
-            self.weights += (np.random.rand(2, 6) - 0.5) * self.learning_rate
+    def mutate(self) -> None:
+        """
+        Mutates Dot brain
+        """
+        self._brain += (np.random.rand(2, 6) - 0.5) * self._learning_rate

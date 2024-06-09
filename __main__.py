@@ -23,10 +23,6 @@ def main():
         gm.reproduce_dots()
         gm.run_generation(window, 20, 0.1)
 
-    best = gm.dots[0]
-
-    best.reset(200, 400)
-    window.fill((255, 255, 255))
 
     active = True
     while active:
