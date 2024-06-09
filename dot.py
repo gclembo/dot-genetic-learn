@@ -24,6 +24,24 @@ class Dot:
         self._is_alive = True
         self._brain = self._Brain()
 
+    def get_x(self) -> float:
+        """
+        :return: x coordinate of this Dot
+        """
+        return self._x
+
+    def get_y(self) -> float:
+        """
+        :return: y coordinate of this Dot
+        """
+        return self._y
+
+    def is_alive(self) -> bool:
+        """
+        :return: If this dot is alive
+        """
+        return self._is_alive
+
     def reset(self, x: float, y: float) -> None:
         """
         Resets Dot and moves it to a given x and y coordinate.
@@ -81,15 +99,15 @@ class Dot:
         """
         self._brain.learning_rate = self.get_fitness() / 1000  # arbitrary
 
-    def make_brain_copy(self, other: Dot) -> None:
+    def make_brain_copy(self, other: 'Dot') -> None:
         """
         Given another dot, makes a copy of its brain and replaces this brain with other brain.
         :param other: Other Dot to copy brain from
         """
-        self._brain.weights = np.copy(other.brain.weights)
-        self._brain.learning_rate = other.brain.learning_rate
+        self._brain.weights = np.copy(other._brain.weights)
+        self._brain.learning_rate = other._brain.learning_rate
 
-    def __lt__(self, other: Dot) -> bool:
+    def __lt__(self, other: 'Dot') -> bool:
         """
         Given another Dot to compare to returns if this Dot is less than the other
         based on whether this Dot has lower fitness.
