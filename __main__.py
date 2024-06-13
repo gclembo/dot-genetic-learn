@@ -1,10 +1,10 @@
 import game_master
 import pygame
 
-window_width = 1000
-window_height = 800
-target_x = 100
-target_y = 400
+window_width = 1000  # display window width
+window_height = 800  # display window height
+target_x = 100  # x coord to target
+target_y = 400  # y coord to target
 dot_start_x = 800
 dot_start_y = 600
 num_dots = 30

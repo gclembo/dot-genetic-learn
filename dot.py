@@ -22,8 +22,8 @@ class Dot:
         self._target_x = target_x
         self._target_y = target_y
         self._is_alive = True
-        self._learning_rate = 0.1
-        self._brain = (np.random.rand(2, 6) - 0.5) * self._learning_rate
+        self._mutation_randomness = 0.1
+        self._brain = (np.random.rand(2, 6) - 0.5) * self._mutation_randomness
 
 
     @property
@@ -99,11 +99,11 @@ class Dot:
         """
         return np.linalg.norm([self._x - self._target_x, self._y - self._target_y])
 
-    def update_learning_rate(self) -> None:
+    def update_mutation_randomness(self) -> None:
         """
-        Updates learning rate based on how successful the Dot is
+        Updates mutation randomness based on how successful the Dot is
         """
-        self._learning_rate = self._get_fitness() / 10000  # arbitrary
+        self._mutation_randomness = self._get_fitness() / 10000  # arbitrary
 
     def make_brain_copy(self, other: 'Dot') -> None:
         """
@@ -111,7 +111,7 @@ class Dot:
         :param other: Other Dot to copy brain from
         """
         self._brain = np.copy(other._brain)
-        self._learning_rate = other._learning_rate
+        self._mutation_randomness = other._mutation_randomness
 
     def __lt__(self, other: 'Dot') -> bool:
         """
@@ -126,4 +126,4 @@ class Dot:
         """
         Mutates Dot brain
         """
-        self._brain += (np.random.rand(2, 6) - 0.5) * self._learning_rate
+        self._brain += (np.random.rand(2, 6) - 0.5) * self._mutation_randomness

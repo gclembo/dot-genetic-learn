@@ -76,9 +76,9 @@ class GameMaster:
         Refreshes new generation of Dots based on the top two fittest Dots
         """
         self._dots.sort()
-        self._dots[0].update_learning_rate()
+        self._dots[0].update_mutation_randomness()
         self._dots[0].reset(self._dot_start_x, self._dot_start_y)
-        self._dots[1].update_learning_rate()
+        self._dots[1].update_mutation_randomness()
         self._dots[1].reset(self._dot_start_x, self._dot_start_y)
 
         for i in range(2, len(self._dots) - 1):
