@@ -25,7 +25,6 @@ class Dot:
         self._mutation_randomness = 0.1
         self._brain = (np.random.rand(2, 6) - 0.5) * self._mutation_randomness
 
-
     @property
     def x(self) -> float:
         """

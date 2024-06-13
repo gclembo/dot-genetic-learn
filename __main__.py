@@ -5,12 +5,12 @@ window_width = 1000  # display window width
 window_height = 800  # display window height
 target_x = 100  # x coord to target
 target_y = 400  # y coord to target
-dot_start_x = 800
-dot_start_y = 600
-num_dots = 30
-num_steps = 20
-pause_time = 0.1
-num_generations = 20
+dot_start_x = 800  # dot starting x coord
+dot_start_y = 600  # dot starting y coord
+num_dots = 30  # number of dots in each generation
+num_steps = 20  # number of steps in each generation
+pause_time = 0.1  # time inbetween steps in each generation
+num_generations = 20  # number of generators to run
 
 
 def main():
@@ -25,8 +25,7 @@ def main():
     pygame.display.update()
 
     gm.run_generation(window, num_steps, pause_time)
-
-    for i in range(num_generations):
+    for i in range(num_generations - 1):
         gm.reproduce_dots()
         gm.run_generation(window, num_steps, pause_time)
 
