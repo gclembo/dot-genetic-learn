@@ -3,10 +3,11 @@ import pygame
 
 width = 1000
 height = 800
-target_x = width / 2
-target_y = height / 2
+target_x = 200
+target_y = 200
 dot_start_x = width - 200
 dot_start_y = height - 200
+
 
 def main():
     gm = game_master.GameMaster(dot_start_x, dot_start_y, 30, target_x, target_y)

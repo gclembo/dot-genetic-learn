@@ -25,18 +25,21 @@ class Dot:
         self._brain = (np.random.rand(2, 6) - 0.5) * 0.1
         self._learning_rate = 0.1
 
-    def get_x(self) -> float:
+    @property
+    def x(self) -> float:
         """
         :return: x coordinate of this Dot
         """
         return self._x
 
-    def get_y(self) -> float:
+    @property
+    def y(self) -> float:
         """
         :return: y coordinate of this Dot
         """
         return self._y
 
+    @property
     def is_alive(self) -> bool:
         """
         :return: If this dot is alive
@@ -66,17 +69,17 @@ class Dot:
         If this Dot is alive, it takes a step in the direction it is moving given a step size
         :param step_size: the size of the step
         """
-        if self._is_alive:
+        if self.is_alive:
             self._x += self._dx * step_size
             self._y += self._dy * step_size
 
-    def get_fitness(self) -> float:
+    def _get_fitness(self) -> float:
         """
         Calculates and returns Dot fitness.
         :return: fitness of the dot
         """
-        target_dist = self.dist_to_target()
-        if self._is_alive:
+        target_dist = self._dist_to_target()
+        if self.is_alive:
             return target_dist
         else:
             return target_dist * 2
@@ -88,7 +91,7 @@ class Dot:
         [self._dx, self._dy] = np.dot(self._brain, [self._x, self._y, self._dx, self._dy,
                                                     self._target_x, self._target_y])
 
-    def dist_to_target(self) -> float:
+    def _dist_to_target(self) -> float:
         """
         Calculates and returns the distance from this Dot to its target coordinates.
         :return: Distance from this Dot to its target coordinates
@@ -99,7 +102,7 @@ class Dot:
         """
         Updates learning rate based on how successful the Dot is
         """
-        self._learning_rate = self.get_fitness() / 10000  # arbitrary
+        self._learning_rate = self._get_fitness() / 10000  # arbitrary
 
     def make_brain_copy(self, other: 'Dot') -> None:
         """
@@ -116,7 +119,7 @@ class Dot:
         :param other: Other Dot to compare to.
         :return: If this Dot is less than the other Dot.
         """
-        return self.get_fitness() < other.get_fitness()
+        return self._get_fitness() < other._get_fitness()
 
     def mutate(self) -> None:
         """

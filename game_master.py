@@ -7,6 +7,7 @@ class GameMaster:
     """
     This class is a Game Master which facilitates dot generations
     """
+
     def __init__(self, dot_start_x: float, dot_start_y: float, num_dots: int,
                  target_x: float, target_y: float) -> None:
         """
@@ -48,10 +49,10 @@ class GameMaster:
             pygame.draw.circle(window, (0, 255, 0),
                                (self._dot_start_x, self._dot_start_y), 5)
             for point in self._dots:
-                pygame.draw.circle(window, (0, 0, 0), (point.get_x(), point.get_y()), 3)
+                pygame.draw.circle(window, (0, 0, 0), (point.x, point.y), 3)
                 point.take_step(1 / frames)
-                if (point.get_x() < 0 or point.get_y() < 0
-                        or point.get_x() > window.get_width() or point.get_y() > window.get_height()):
+                if (point.x < 0 or point.y < 0
+                        or point.x > window.get_width() or point.y > window.get_height()):
                     point.die()
             pygame.display.update()
             time.sleep(pause_time / frames)
@@ -59,7 +60,6 @@ class GameMaster:
         # updates point velocities
         for point in self._dots:
             point.chose_velocity()
-
 
     def run_generation(self, window: pygame.Surface, step_num: int, pause_time: float) -> None:
         """
