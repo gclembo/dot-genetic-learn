@@ -1,6 +1,6 @@
 import time
 import pygame
-import dot
+from dot import Dot
 
 
 class GameMaster:
@@ -29,7 +29,7 @@ class GameMaster:
         self._target_y = target_y
         self._dots = []
         for i in range(num_dots):
-            self._dots.append(dot.Dot(self._dot_start_x, self._dot_start_y,
+            self._dots.append(Dot(self._dot_start_x, self._dot_start_y,
                                       self._target_x, self._target_y))
 
     def update_dots(self, window: pygame.Surface, pause_time: float) -> None:
@@ -39,7 +39,7 @@ class GameMaster:
         :param window: window for display
         :param pause_time: time between velocity updates
         """
-        point: dot.Dot
+        point: Dot
         # moves dots and updates display
         frames = 10
         for i in range(frames):
@@ -83,8 +83,9 @@ class GameMaster:
         self._dots[1].reset(self._dot_start_x, self._dot_start_y)
 
         for i in range(2, len(self._dots) - 1):
-            point: dot.Dot = self._dots[i]
+            point: Dot = self._dots[i]
             point.make_brain_copy(self._dots[i % 2])
             point.reset(self._dot_start_x, self._dot_start_y)
             point.mutate()
             self._dots[i] = point
+
