@@ -22,8 +22,9 @@ class Dot:
         self._target_x = target_x
         self._target_y = target_y
         self._is_alive = True
-        self._brain = (np.random.rand(2, 6) - 0.5) * 0.1
         self._learning_rate = 0.1
+        self._brain = (np.random.rand(2, 6) - 0.5) * self._learning_rate
+
 
     @property
     def x(self) -> float:
