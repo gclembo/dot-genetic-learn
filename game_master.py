@@ -22,15 +22,15 @@ class GameMaster:
         """
         if num_dots < 2:
             raise ValueError("Number of dots must be at least 2")
-        self._dots = [None] * num_dots
         self._num_dots = num_dots
         self._dot_start_x = dot_start_x
         self._dot_start_y = dot_start_y
         self._target_x = target_x
         self._target_y = target_y
+        self._dots = []
         for i in range(num_dots):
-            self._dots[i] = dot.Dot(self._dot_start_x, self._dot_start_y,
-                                    self._target_x, self._target_y)
+            self._dots.append(dot.Dot(self._dot_start_x, self._dot_start_y,
+                                      self._target_x, self._target_y))
 
     def update_dots(self, window: pygame.Surface, pause_time: float) -> None:
         """
