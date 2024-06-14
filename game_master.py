@@ -5,20 +5,20 @@ from dot import Dot
 
 class GameMaster:
     """
-    This class is a Game Master which facilitates dot generations
+    This class is a Game Master which facilitates running Dot generations and reproduction
     """
 
     def __init__(self, dot_start_x: float, dot_start_y: float, num_dots: int,
                  target_x: float, target_y: float) -> None:
         """
-        Initializes a new GameMaster object given a starting x any for each generation of Dots,
-        the number of dots in each generation, and the target x and y for each generation
-        :param dot_start_x:
-        :param dot_start_y:
-        :param num_dots:
-        :param target_x:
-        :param target_y:
-        :raises ValueError: if the number of dots is not at least 2
+        Initializes a new GameMaster object given a starting x and y for each generation of Dots,
+        the number of Dots in each generation, and the target x and y for each generation.
+        :param dot_start_x: Starting x value for each generation of Dots.
+        :param dot_start_y: Starting y value for each generation of Dots.
+        :param num_dots: Number of Dots in each generation.
+        :param target_x: Target x coordinate.
+        :param target_y: Target y coordinate.
+        :raises ValueError: if the number of dots is not at least 2.
         """
         if num_dots < 2:
             raise ValueError("Number of dots must be at least 2")
@@ -35,11 +35,11 @@ class GameMaster:
     def update_dots(self, window: pygame.Surface, pause_time: float) -> None:
         """
         Given a window to display, and a time between velocity updates,
-        runs a step for all Dots in Game Master
-        :param window: window for display
-        :param pause_time: time between velocity updates
+        runs a step for all Dots in Game Master.
+        :param window: window for display.
+        :param pause_time: time between velocity updates.
         """
-        point: Dot
+        # Display updates
         frames = 10
         for i in range(frames):
             window.fill((255, 255, 255))
@@ -64,16 +64,16 @@ class GameMaster:
         """
         Given a window for display, number of steps to take, and the time between velocity
         updates, runs the generation for the given number of steps.
-        :param window: window for display
-        :param step_num: number of steps in generation
-        :param pause_time: time between velocity updates
+        :param window: window for display.
+        :param step_num: number of steps in generation.
+        :param pause_time: time between velocity updates.
         """
         for i in range(step_num):
             self.update_dots(window, pause_time)
 
     def reproduce_dots(self):
         """
-        Refreshes new generation of Dots based on the top two fittest Dots
+        Refreshes new generation of Dots based on the top two fittest Dots.
         """
         self._dots.sort()
         self._dots[0].update_mutation_randomness()
