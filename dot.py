@@ -3,7 +3,7 @@ import numpy as np
 
 class Dot:
     """
-    This class represents a dot.
+    This class represents a dot with a location, velocity, and target location to get to.
     """
 
     def __init__(self, x: float, y: float, target_x: float, target_y: float) -> None:
@@ -42,7 +42,7 @@ class Dot:
     @property
     def is_alive(self) -> bool:
         """
-        :return: If this dot is alive.
+        :return: If this Dot is alive.
         """
         return self._is_alive
 
@@ -107,7 +107,7 @@ class Dot:
 
     def make_brain_copy(self, other: 'Dot') -> None:
         """
-        Given another dot, makes a copy of its brain and replaces this brain with other brain.
+        Given another Dot, makes a copy of its brain and replaces this brain with other brain.
         :param other: Other Dot to copy brain from
         """
         self._brain = np.copy(other._brain)
