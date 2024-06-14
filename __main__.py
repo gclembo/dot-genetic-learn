@@ -16,19 +16,19 @@ num_generations = 20  # number of generators to run
 def main():
     gm = game_master.GameMaster(dot_start_x, dot_start_y, num_dots, target_x, target_y)
 
+    # Starts pygame window
     pygame.init()
     window = pygame.display.set_mode((window_width, window_height))
     window.fill((255, 255, 255))
     pygame.display.flip()
 
-    pygame.draw.circle(window, (255, 0, 0), (target_x, target_y), 5)
-    pygame.display.update()
-
+    # Runs generations
     gm.run_generation(window, num_steps, pause_time)
     for i in range(num_generations - 1):
         gm.reproduce_dots()
         gm.run_generation(window, num_steps, pause_time)
 
+    # Wait for window to  be closed
     active = True
     while active:
         for event in pygame.event.get():
