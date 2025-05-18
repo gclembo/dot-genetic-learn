@@ -1,4 +1,7 @@
+from typing import Any
+
 import numpy as np
+from numpy import floating
 
 
 class Dot:
@@ -23,7 +26,7 @@ class Dot:
         self._target_y = target_y  # target y
         self._is_alive = True  # if Dot is alive
         self._mutation_randomness = 0.1  # amount of randomness in mutation
-        self._brain = (np.random.rand(2, 6) - 0.5) * self._mutation_randomness  # Dot brain weights
+        self._brain = (np.random.rand(2, 2) - 0.5) * self._mutation_randomness  # Dot brain weights
 
     @property
     def x(self) -> float:
@@ -46,11 +49,35 @@ class Dot:
         """
         return self._is_alive
 
+    def get_brain(self) -> np.array:
+        """
+        :return: Returns the matrix representing the dot brain.
+        """
+        return self._brain
+
+    def set_brain(self, brain: np.array) -> None:
+        """
+        Given a 2 by 2 numpy array representing a dot brain, sets
+        the matrix to the dot brain.
+        :param brain: Numpy array representing dot brain.
+        """
+        self._brain = brain
+
+    def update_end(self, target_x: float, target_y: float):
+        """
+        Given a new x and y coordinate for the target, target
+        location for the dot.
+        :param target_x: new x coordinate for dot target.
+        :param target_y: new y coordinate for dot target.
+        """
+        self._target_x = target_x
+        self._target_y = target_y
+
     def reset(self, x: float, y: float) -> None:
         """
         Resets Dot and moves it to a given x and y coordinate.
-        :param x: new x coordinate
-        :param y: new y coordinate
+        :param x: new x coordinate.
+        :param y: new y coordinate.
         """
         self._x = x
         self._y = y
@@ -74,7 +101,7 @@ class Dot:
             self._x += self._dx * step_size
             self._y += self._dy * step_size
 
-    def _get_fitness(self) -> float:
+    def _get_fitness(self) -> floating[Any] | int:
         """
         Calculates and returns Dot fitness.
         :return: fitness of the dot.
@@ -85,14 +112,24 @@ class Dot:
         else:
             return target_dist * 2
 
+
     def chose_velocity(self) -> None:
         """
         Calculates what the Dot's current velocity should be based on brain weights.
         """
-        [self._dx, self._dy] = np.dot(self._brain, [self._x, self._y, self._dx, self._dy,
-                                                    self._target_x, self._target_y])
+        dx, dy = np.dot(self._brain, [self._target_x - self._x, self._target_y - self._y])
 
-    def _dist_to_target(self) -> float:
+        length = np.linalg.norm([dx, dy])
+        speed = 15
+        if length > 0.1:
+            self._dx, self._dy = speed * dx / length, speed * dy / length
+        # elif length > 0.05:
+        #     self._dx, self._dy = dx, dy
+        else:
+            self._dx, self._dy = 0, 0
+
+
+    def _dist_to_target(self) -> floating[Any]:
         """
         Calculates and returns the distance from this Dot to its target coordinates.
         :return: Distance from this Dot to its target coordinates.
@@ -101,9 +138,9 @@ class Dot:
 
     def update_mutation_randomness(self) -> None:
         """
-        Updates mutation randomness based on how fit the Dot is
+        Updates mutation randomness based on how fit the Dot is.
         """
-        self._mutation_randomness = self._get_fitness() / 10000  # arbitrary
+        self._mutation_randomness = self._get_fitness() / 1000  # arbitrary
 
     def make_brain_copy(self, other: 'Dot') -> None:
         """
@@ -127,4 +164,4 @@ class Dot:
         """
         Mutates Dot brain.
         """
-        self._brain += (np.random.rand(2, 6) - 0.5) * self._mutation_randomness
+        self._brain += (np.random.rand(2, 2) - 0.5) * self._mutation_randomness
