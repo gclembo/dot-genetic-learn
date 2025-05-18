@@ -1,11 +1,11 @@
 import time
 import pygame
 from dot import Dot
-
+import numpy as np
 
 class GameMaster:
     """
-    This class is a Game Master which facilitates running Dot generations and reproduction
+    This class is a Game Master which facilitates running Dot generations and reproduction.
     """
 
     def __init__(self, dot_start_x: float, dot_start_y: float, num_dots: int,
@@ -28,6 +28,7 @@ class GameMaster:
         self._target_x = target_x
         self._target_y = target_y
         self._dots = []
+        self._avg_brain = np.zeros((2, 2))
         for i in range(num_dots):
             self._dots.append(Dot(self._dot_start_x, self._dot_start_y,
                                   self._target_x, self._target_y))
@@ -53,12 +54,26 @@ class GameMaster:
                 if (point.x < 0 or point.y < 0
                         or point.x > window.get_width() or point.y > window.get_height()):
                     point.die()
+            pygame.draw.circle(window, (0, 0, 255), (self._dots[0].x, self._dots[0].y), 3)
             pygame.display.update()
             time.sleep(pause_time / frames)
 
         # updates point velocities
         for point in self._dots:
             point.chose_velocity()
+
+
+    def update_end(self, target_x: float, target_y: float) -> None:
+        """
+        Given a new x and y coordinate for the target, updates all dots to
+        be considering this new location.
+        :param target_x: new x coordinate for dot target.
+        :param target_y: new y coordinate for dot target.
+        """
+        self._target_x = target_x
+        self._target_y = target_y
+        for dot in self._dots:
+            dot.update_end(target_x, target_y)
 
     def run_generation(self, window: pygame.Surface, step_num: int, pause_time: float) -> None:
         """
@@ -73,17 +88,20 @@ class GameMaster:
 
     def reproduce_dots(self):
         """
-        Refreshes new generation of Dots based on the top two fittest Dots.
+        Refreshes new generation of Dots based on the top fittest Dot.
         """
         self._dots.sort()
+        self._avg_brain = (self._avg_brain + self._dots[0].get_brain()) / 2
+
         self._dots[0].update_mutation_randomness()
         self._dots[0].reset(self._dot_start_x, self._dot_start_y)
-        self._dots[1].update_mutation_randomness()
-        self._dots[1].reset(self._dot_start_x, self._dot_start_y)
 
+        self._dots[1].reset(self._dot_start_x, self._dot_start_y)
+        self._dots[1].set_brain(self._avg_brain)
         for i in range(2, len(self._dots) - 1):
-            point: Dot = self._dots[i]
-            point.make_brain_copy(self._dots[i % 2])
-            point.reset(self._dot_start_x, self._dot_start_y)
-            point.mutate()
-            self._dots[i] = point
+            dot = self._dots[i]
+            dot.make_brain_copy(self._dots[0])
+            dot.reset(self._dot_start_x, self._dot_start_y)
+            dot.mutate()
+
+
